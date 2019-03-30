@@ -1,0 +1,14 @@
+spring:
+  profiles:
+    # 在这里指定是使用生产还是开发环境
+    active: dev
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/dbemotionclassing
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      # update 指定每启动项目只是更新数据库
+      ddl-auto: update
+    show-sql: true
