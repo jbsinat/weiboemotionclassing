@@ -5,6 +5,7 @@ import com.biao.weiboemotionclassing.entities.Comment;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 本类集成对txt文件进行操作的所有工具函数
@@ -163,4 +164,17 @@ public class TxtFileOperation {
         }
     }
 
+    /**
+     * 将传过来的map形式的特征词集合存到文件中
+     * @param tops
+     * @param s
+     */
+    public static void saveAsFileWithMaps(Map<String, Double> tops, String filepath) {
+        List<String> features = new ArrayList<>();
+        //遍历键值，即特征词
+        for (String key : tops.keySet()) {
+            features.add(key);
+        }
+        saveAsFileWithContent(features, filepath);
+    }
 }

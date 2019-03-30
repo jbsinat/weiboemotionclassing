@@ -9,7 +9,7 @@ import com.hankcs.hanlp.seg.common.Term;
 import java.util.*;
 
 /**
- * 二、情感分类第二步：利用HanLp进行分词相关操作
+ * 二、情感分类第二步：利用HanLp进行分词相关操作，并计算出特征值
  */
 public class FenciWithHanLpOperation {
 
@@ -18,31 +18,6 @@ public class FenciWithHanLpOperation {
         String filepath_1 = "data_group/simple_data_set/1_1000_comments.txt";
         String filepath_2 = "data_group/simple_data_set/2_1000_comments.txt";
         String filepath_3 = "data_group/simple_data_set/3_1000_comments.txt";
-//        //读取评论文件
-//        List<String> comments_0 = TxtFileOperation.readAllLinesWithContent(filepath_0);
-//        List<String> comments_1 = TxtFileOperation.readAllLinesWithContent(filepath_1);
-//        List<String> comments_2 = TxtFileOperation.readAllLinesWithContent(filepath_2);
-//        List<String> comments_3 = TxtFileOperation.readAllLinesWithContent(filepath_3);
-//
-//        //分词处理，得到分词后的评论形式
-//        List<List<Term>> commentsAfterQieFen_0;
-//        List<List<Term>> commentsAfterQieFen_1;
-//        List<List<Term>> commentsAfterQieFen_2;
-//        List<List<Term>> commentsAfterQieFen_3;
-//        commentsAfterQieFen_0 = qiefenAndDescTingyongci(comments_0);
-//        commentsAfterQieFen_1 = qiefenAndDescTingyongci(comments_1);
-//        commentsAfterQieFen_2 = qiefenAndDescTingyongci(comments_2);
-//        commentsAfterQieFen_3 = qiefenAndDescTingyongci(comments_3);
-//
-//        // 将commentsAfterQieFen 拓展成对象（id，category，comment_fencis）
-//        //0:喜悦类
-//        List<Comment_fenci_storeString> comment_fencis_0 = tuozhancheng_duixiang(commentsAfterQieFen_0, "0-happy");
-//        //1:愤怒类
-//        List<Comment_fenci_storeString> comment_fencis_1 = tuozhancheng_duixiang(commentsAfterQieFen_1, "1-angry");
-//        //2:厌恶类
-//        List<Comment_fenci_storeString> comment_fencis_2 = tuozhancheng_duixiang(commentsAfterQieFen_2, "2-hate");
-//        //3:低落类
-//        List<Comment_fenci_storeString> comment_fencis_3 = tuozhancheng_duixiang(commentsAfterQieFen_3, "3-downcast");
 
         //获取分词预处理后的对象集合：对象（id，category，comment_fencis）
         List<Comment_fenci_storeString> comment_fencis_0 = PreOperation(filepath_0, "0-happy");
@@ -55,7 +30,7 @@ public class FenciWithHanLpOperation {
         Map<String, Double> tops2 = new HashMap<>();
         Map<String, Double> tops3 = new HashMap<>();
 
-        // 以0 类为例，进行CHI计算：
+        // 以 0 类为例，进行CHI计算：
         tops = jisuanCHIOf0(comment_fencis_0, comment_fencis_1, comment_fencis_2, comment_fencis_3, false);
         tops1 = jisuanCHIOf1(comment_fencis_0, comment_fencis_1, comment_fencis_2, comment_fencis_3, false);
         tops2 = jisuanCHIOf2(comment_fencis_0, comment_fencis_1, comment_fencis_2, comment_fencis_3, false);
@@ -67,6 +42,11 @@ public class FenciWithHanLpOperation {
         System.out.println("tops2.size() = " + tops2.size());
         System.out.println("tops3.size() = " + tops3.size());
 
+        //将所有特征词存入文件中：用于后面使用贝叶斯算法进行概率计算
+        TxtFileOperation.saveAsFileWithMaps(tops, "data_group/feature_word_set_all/0_happy_all.txt");
+        TxtFileOperation.saveAsFileWithMaps(tops1, "data_group/feature_word_set_all/1_angry_all.txt");
+        TxtFileOperation.saveAsFileWithMaps(tops2, "data_group/feature_word_set_all/2_hate_all.txt");
+        TxtFileOperation.saveAsFileWithMaps(tops3, "data_group/feature_word_set_all/3_downcast_all.txt");
 
         // 对Map排序，藉此选择词频为 top100 的词
         List<String> top_0_100;
@@ -90,6 +70,8 @@ public class FenciWithHanLpOperation {
         TxtFileOperation.saveAsFileWithContent(top_2_100, savePath_tezhengci_1);
         TxtFileOperation.saveAsFileWithContent(top_3_100, savePath_tezhengci_3);
 
+        // 然后存入数据库
+
     }
 
     /**
@@ -103,18 +85,18 @@ public class FenciWithHanLpOperation {
         List<String> comments = TxtFileOperation.readAllLinesWithContent(filepath);
         //分词处理，得到分词后的评论形式
         List<List<Term>> commentsAfterQieFen;
-        commentsAfterQieFen = qiefenAndDescTingyongci(comments);
+        commentsAfterQieFen = qiefenAndDescTingyongciWithList(comments);
         // 将commentsAfterQieFen 拓展成对象（id，category，comment_fencis）
         List<Comment_fenci_storeString> comment_fencis = tuozhancheng_duixiang(commentsAfterQieFen, category);
         return comment_fencis;
     }
 
     /**
-     * 切分并去除停用词
+     * 切分并去除停用词--对一整个集合操作
      * @param comments ：评论集合
      * @return ：返回已经切分并且去除停用词的处理后的评论集合
      */
-    public static List<List<Term>> qiefenAndDescTingyongci(List<String> comments){
+    public static List<List<Term>> qiefenAndDescTingyongciWithList(List<String> comments){
         List<List<Term>> contentAfterChooses = new ArrayList<>();
         List<Term> termList;
 
@@ -132,6 +114,24 @@ public class FenciWithHanLpOperation {
         }
 
         return contentAfterChooses;
+    }
+
+    /**
+     * 进队单个字符串进行分词操作
+     * @param comment
+     * @return ：返回分词结果
+     */
+    public static List<Term> qiefenAndDescTingyongci(String comment){
+        List<Term> termList = new ArrayList<>();
+
+        //将一些富含繁体字的评论转化成简体字版的评论
+        HanLP.convertToSimplifiedChinese(comment);
+        termList = HanLP.segment(comment);
+
+        //去除停用词
+        CoreStopWordDictionary.apply(termList);
+        System.out.println(termList);
+        return termList;
     }
 
     /**
@@ -169,7 +169,7 @@ public class FenciWithHanLpOperation {
      * @param comment_fenci_2
      * @param comment_fenci_3
      * @param isopt : 是否开启词频因素优化（即是否考虑词频因素对 CHI 计算结果的影响）
-     * @return
+     * @return ：返回所有特征词以及该词对应的权值
      */
     public static Map<String , Double> jisuanCHIOf0(List<Comment_fenci_storeString> comment_fenci_0,
                                                     List<Comment_fenci_storeString> comment_fenci_1,
