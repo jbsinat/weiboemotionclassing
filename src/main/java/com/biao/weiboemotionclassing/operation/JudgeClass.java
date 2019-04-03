@@ -84,18 +84,24 @@ public class JudgeClass {
      * @param p2
      * @param p3
      */
-    public static void outLeibie(Double p0, Double p1, Double p2, Double p3){
+    public static Integer outLeibie(Double p0, Double p1, Double p2, Double p3){
         if(p0>p1 && p0>p2 && p0>p3){
             System.out.println("当前评论类别为： " + "0-喜悦");
+            return 0;
         }
         else if(p1>p0 && p1>p2 && p1>p3){
             System.out.println("当前评论类别为： " + "1-愤怒");
+            return 1;
         }
         else if(p2>p0 && p2>p1 && p2>p3){
             System.out.println("当前评论类别为： " + "2-厌恶");
+            return 2;
         }
-        else if(p3>p0 && p3>p1 && p3>p2){
+        else if(p3>p0 && p3>p1 && p3>p2) {
             System.out.println("当前评论类别为： " + "3-低落");
+            return 3;
+        } else {
+            return -1;
         }
     }
 
@@ -107,19 +113,25 @@ public class JudgeClass {
      * @param tezhengWordsPath
      * @return
      */
-    private static Double getPtc(List<String> stringList, Double xianYanGaiLv, String allWordsPath, String tezhengWordsPath) {
+    public static Double getPtc(List<String> stringList, Double xianYanGaiLv, String allWordsPath, String tezhengWordsPath) {
         List<Double> p_a0s = new ArrayList<>();
         //
         Double p = 1.0;
         for (int k1 = 0; k1 < stringList.size(); k1++) {
             String ci = stringList.get(k1); //获取当前评论的一个词
+            //返回给定词在类 i 中的出现次数
             Double Ncx = getNcx(ci, allWordsPath).doubleValue();
+            System.out.println("Ncx = " + Ncx);
+            //总词数
             Double N = getN(allWordsPath).doubleValue();
+            //特征词数
             Double V = getV(tezhengWordsPath).doubleValue();
 
             p = ((Ncx + 1) / (N + V));
+            System.out.println("p " + k1 + " = " + p);
             p_a0s.add(p);
         }
+        //p(y_i)，当前类的概率，为1
         Double p0 = 1.0;
         for (int k2 = 0; k2 < p_a0s.size(); k2++){
             p0 = p0 * p_a0s.get(k2);

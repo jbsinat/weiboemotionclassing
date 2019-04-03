@@ -71,13 +71,13 @@ public class TxtFileOperation {
         BufferedReader bufferedReader = null;
 
         try{
-            System.out.println("以行为单位，一次读取一行");
+//            System.out.println("以行为单位，一次读取一行");
             bufferedReader = new BufferedReader(new FileReader(file));
             String tempString;
             int line = 1;
             while ((tempString = bufferedReader.readLine()) != null) {
                 // 显示行号
-                System.out.println("line " + line + " : " + tempString);
+//                System.out.println("line " + line + " : " + tempString);
                 line++;
 
                 //插入队列
