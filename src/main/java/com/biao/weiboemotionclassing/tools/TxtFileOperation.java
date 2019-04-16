@@ -1,9 +1,11 @@
 package com.biao.weiboemotionclassing.tools;
 
 import com.biao.weiboemotionclassing.entities.Comment;
+import com.biao.weiboemotionclassing.entities.Comment_fenci_storeString;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +14,22 @@ import java.util.Map;
  *
  */
 public class TxtFileOperation {
+
+    /**
+     * 返回 Map 形式的特征词集合
+     * @param path
+     * @return
+     */
+    public static Map<String, Double> readFeatureSetFile(String path) {
+        Map<String, Double> featureList = new HashMap<>();
+        List<String> list = TxtFileOperation.readAllLinesWithContent(path);
+        for (int i=0;i<list.size();i++){
+//            System.out.println(list.get(i));
+            String[] li = list.get(i).split(":");
+            featureList.put(li[0], new Double(li[1]));
+        }
+        return featureList;
+    }
 
     /**
      * 返回指定条数的评论
@@ -99,6 +117,38 @@ public class TxtFileOperation {
     }
 
     /**
+     * 将 Comment_fenci_storeString 对象集合的分词后的字符串存入文件
+     * @param comment_fenci_storeStrings
+     * @param path
+     */
+    public static void saveAsFileWithComment_fenci_storeString(List<Comment_fenci_storeString> comment_fenci_storeStrings, String path) {
+        try {
+            File file = new File(path);
+
+            //if file do not exists, then create it
+            if(!file.exists()){
+                file.createNewFile();
+            } else {
+                //if file has been existed, delete it ,then create a new file
+                file.delete();
+                file.createNewFile();
+            }
+
+            for (Comment_fenci_storeString comment_fenci_storeString : comment_fenci_storeStrings){
+                //FileWrite的第二个参数为true， 代表在文件后面追加而不覆盖
+                FileWriter fileWriter = new FileWriter(file.getAbsoluteFile(), true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                bufferedWriter.write(comment_fenci_storeString.getComments_fenci().toString() + "\r\n");
+                bufferedWriter.close();
+            }
+
+            System.out.println("save As File With Comment_fenci_storeString Done!");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 将传入的一组评论按行存入文件中
      * @param comments
      * @param path
@@ -173,7 +223,7 @@ public class TxtFileOperation {
         List<String> features = new ArrayList<>();
         //遍历键值，即特征词
         for (String key : tops.keySet()) {
-            features.add(key);
+            features.add(key + ":" + tops.get(key));
         }
         saveAsFileWithContent(features, filepath);
     }

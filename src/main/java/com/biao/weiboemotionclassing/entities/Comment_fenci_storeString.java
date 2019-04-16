@@ -4,6 +4,10 @@ import java.util.List;
 
 /**
  * 分词之后存储分词形式的类对象模型
+ * 例：我是个帅哥！
+ *    id = 1;
+ *    category = 0;     //正面
+ *    List<String> comments_fenci = [我是, 帅哥];
  */
 public class Comment_fenci_storeString {
 

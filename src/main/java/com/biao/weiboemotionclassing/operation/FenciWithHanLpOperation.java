@@ -14,61 +14,107 @@ import java.util.*;
 public class FenciWithHanLpOperation {
 
     public static void main(String[] args) {
+//        init_sava_as_onlyhavewords();
+        init_save_as_map();
+    }
+
+    /**
+     * 初始化函数
+     * 存储成普通的特征词文件
+     */
+    public static void init_sava_as_onlyhavewords(){
         String filepath_0 = "data_group/simple_data_set/0_1000_comments.txt";
         String filepath_1 = "data_group/simple_data_set/1_1000_comments.txt";
-        String filepath_2 = "data_group/simple_data_set/2_1000_comments.txt";
-        String filepath_3 = "data_group/simple_data_set/3_1000_comments.txt";
 
         //获取分词预处理后的对象集合：对象（id，category，comment_fencis）
         List<Comment_fenci_storeString> comment_fencis_0 = PreOperation(filepath_0, "0-happy");
         List<Comment_fenci_storeString> comment_fencis_1 = PreOperation(filepath_1, "1-angry");
-        List<Comment_fenci_storeString> comment_fencis_2 = PreOperation(filepath_2, "2-hate");
-        List<Comment_fenci_storeString> comment_fencis_3 = PreOperation(filepath_3, "3-downcast");
+
+        //将分词处理后的结果存成文件（but not use again , emmm, only sava for you can see）
+        TxtFileOperation.saveAsFileWithComment_fenci_storeString(comment_fencis_0, "data_group/segmented_data_set/0_pos_fencihou.txt");
+        TxtFileOperation.saveAsFileWithComment_fenci_storeString(comment_fencis_1, "data_group/segmented_data_set/1_neg_fencihou.txt");
 
         Map<String, Double> tops = new HashMap<>();
         Map<String, Double> tops1 = new HashMap<>();
-        Map<String, Double> tops2 = new HashMap<>();
-        Map<String, Double> tops3 = new HashMap<>();
 
-        // 以 0 类为例，进行CHI计算：
-        tops = jisuanCHIOf0(comment_fencis_0, comment_fencis_1, comment_fencis_2, comment_fencis_3, false);
-        tops1 = jisuanCHIOf1(comment_fencis_0, comment_fencis_1, comment_fencis_2, comment_fencis_3, false);
-        tops2 = jisuanCHIOf2(comment_fencis_0, comment_fencis_1, comment_fencis_2, comment_fencis_3, false);
-        tops3 = jisuanCHIOf3(comment_fencis_0, comment_fencis_1, comment_fencis_2, comment_fencis_3, false);
+        //进行CHI计算
+        //第二个参数为false，表示没有考虑词频对CHI计算的影响
+        tops = jisuanCHIOF0_twoclass(comment_fencis_0, comment_fencis_1, false);
+        tops1 = jisuanCHIOf1_twoclass(comment_fencis_0, comment_fencis_1, false);
 
         System.out.println("---------------------------------------------------------");
         System.out.println("tops.size() = " + tops.size());
         System.out.println("tops1.size() = " + tops1.size());
-        System.out.println("tops2.size() = " + tops2.size());
-        System.out.println("tops3.size() = " + tops3.size());
 
-        //将所有特征词存入文件中：用于后面使用贝叶斯算法进行概率计算
+        //将所有特征词存入文件中：用于后面使用贝叶斯算法进行概率计算（但利用特征词作为概率计算依据会导致正确率很低，大概50-60%，所以后面将直接使用评论）
+        //由于使用Map存储特征值，所以此时的特征值不会有重复
         TxtFileOperation.saveAsFileWithMaps(tops, "data_group/feature_word_set_all/0_happy_all.txt");
         TxtFileOperation.saveAsFileWithMaps(tops1, "data_group/feature_word_set_all/1_angry_all.txt");
-        TxtFileOperation.saveAsFileWithMaps(tops2, "data_group/feature_word_set_all/2_hate_all.txt");
-        TxtFileOperation.saveAsFileWithMaps(tops3, "data_group/feature_word_set_all/3_downcast_all.txt");
 
         // 对Map排序，藉此选择词频为 top100 的词
         List<String> top_0_100;
         List<String> top_1_100;
-        List<String> top_2_100;
-        List<String> top_3_100;
         top_0_100 = getTopN(tops, 100);
         top_1_100 = getTopN(tops1, 100);
-        top_2_100 = getTopN(tops2, 100);
-        top_3_100 = getTopN(tops3, 100);
 
         System.out.println("---------------------------------------------------------");
 
-        //将特征词存成特征文件
+        //将top100特征词存成特征文件(不含有权值)
         String savePath_tezhengci_0 = "data_group/feature_word_set/0_happy.txt";
         String savePath_tezhengci_1 = "data_group/feature_word_set/1_angry.txt";
-        String savePath_tezhengci_2 = "data_group/feature_word_set/2_hate.txt";
-        String savePath_tezhengci_3 = "data_group/feature_word_set/3_downcast.txt";
         TxtFileOperation.saveAsFileWithContent(top_0_100, savePath_tezhengci_0);
-        TxtFileOperation.saveAsFileWithContent(top_1_100, savePath_tezhengci_2);
-        TxtFileOperation.saveAsFileWithContent(top_2_100, savePath_tezhengci_1);
-        TxtFileOperation.saveAsFileWithContent(top_3_100, savePath_tezhengci_3);
+        TxtFileOperation.saveAsFileWithContent(top_1_100, savePath_tezhengci_1);
+
+        // 然后存入数据库
+
+    }
+
+    /**
+     * 计算提取特征词
+     * 存储成形式为 "Map：词wi：权值" 的文件
+     */
+    public static void init_save_as_map(){
+        String filepath_0 = "data_group/simple_data_set/0_1000_comments.txt";
+        String filepath_1 = "data_group/simple_data_set/1_1000_comments.txt";
+
+        //获取分词预处理后的对象集合：对象（id，category，comment_fencis）
+        List<Comment_fenci_storeString> comment_fencis_0 = PreOperation(filepath_0, "0-happy");
+        List<Comment_fenci_storeString> comment_fencis_1 = PreOperation(filepath_1, "1-angry");
+
+        //将分词处理后的结果存成文件（but not use again , emmm, only sava for you can see）
+        TxtFileOperation.saveAsFileWithComment_fenci_storeString(comment_fencis_0, "data_group/segmented_data_set/0_pos_fencihou.txt");
+        TxtFileOperation.saveAsFileWithComment_fenci_storeString(comment_fencis_1, "data_group/segmented_data_set/1_neg_fencihou.txt");
+
+        Map<String, Double> tops = new HashMap<>();
+        Map<String, Double> tops1 = new HashMap<>();
+
+        //进行CHI计算
+        //第二个参数为false，表示没有考虑词频对CHI计算的影响
+        tops = jisuanCHIOF0_twoclass(comment_fencis_0, comment_fencis_1, false);
+        tops1 = jisuanCHIOf1_twoclass(comment_fencis_0, comment_fencis_1, false);
+
+        System.out.println("---------------------------------------------------------");
+        System.out.println("tops.size() = " + tops.size());
+        System.out.println("tops1.size() = " + tops1.size());
+
+        //将所有特征词存入文件中：用于后面使用贝叶斯算法进行概率计算（但利用特征词作为概率计算依据会导致正确率很低，大概50-60%，所以后面将直接使用评论）
+        //由于使用Map存储特征值，所以此时的特征值不会有重复
+        TxtFileOperation.saveAsFileWithMaps(tops, "data_group/feature_word_set_all/0_happy_all.txt");
+        TxtFileOperation.saveAsFileWithMaps(tops1, "data_group/feature_word_set_all/1_angry_all.txt");
+
+        // 对Map排序，藉此选择词频为 top200 的词
+        Map<String, Double> top_0_100;
+        Map<String, Double> top_1_100;
+        top_0_100 = getTopN_returnMap(tops, 500);
+        top_1_100 = getTopN_returnMap(tops1, 500);
+
+        System.out.println("---------------------------------------------------------");
+
+        //将top100特征词存成特征文件（包含权值）
+        String savePath_tezhengci_0 = "data_group/feature_word_set/0_happy.txt";
+        String savePath_tezhengci_1 = "data_group/feature_word_set/1_angry.txt";
+        TxtFileOperation.saveAsFileWithMaps(top_0_100, savePath_tezhengci_0);
+        TxtFileOperation.saveAsFileWithMaps(top_1_100, savePath_tezhengci_1);
 
         // 然后存入数据库
 
@@ -162,7 +208,134 @@ public class FenciWithHanLpOperation {
 
     // 进行CHI计算---------------------------------------------------------------------------------------
 
-    /**
+    //二分类下的CHI计算
+    /** 二分类
+     * 对 0-正面类进行CHI计算
+     * @param comment_fenci_0
+     * @param comment_fenci_1
+     * @param isopt ：是否考虑词频因素的影响
+     * @return
+     */
+    public static Map<String, Double> jisuanCHIOF0_twoclass(List<Comment_fenci_storeString> comment_fenci_0,
+                                                            List<Comment_fenci_storeString> comment_fenci_1,
+                                                            boolean isopt){
+        Map<String, Double> tops = new HashMap<>();
+
+        for (int i = 1; i < comment_fenci_0.size(); i++){
+            for (int j = 0; j < comment_fenci_0.get(i).getComments_fenci().size(); j++){
+                String term = comment_fenci_0.get(i).getComments_fenci().get(j);
+                System.out.println(term);
+
+                //计算该词的double_x
+                //只有当前词没被加入到Map中，即该词还没有计算CHI，才对该词进行计算，以避免重复计算
+                if (!tops.containsValue(term)){
+                    int a = 0;  //a表示0类中含该词的评论数
+                    int b = 0;  //b表示其余类中含该词的评论数
+                    int c = 0;  //c表示0类中不含该词的评论数
+                    int d = 0;  //d表示其余类中不含该词的评论数
+
+                    //计算a、b、c、d
+                    for (int m0 = 0; m0 < comment_fenci_0.size(); m0++) {
+                        if (comment_fenci_0.get(m0).getComments_fenci().contains(term)) {
+                            a++;
+                        } else {
+                            c++;
+                        }
+                    }
+                    for (int m1 = 0; m1 < comment_fenci_1.size(); m1++) {
+                        if (comment_fenci_1.get(m1).getComments_fenci().contains(term)) {
+                            b++;
+                        } else {
+                            d++;
+                        }
+                    }
+
+                    //计算
+                    double dx;
+                    dx = (Math.pow((a * d - b * c), 2)) / ((a + b) * (c + d));
+                    //是否要求加入词频因素优化计算结果
+                    if (isopt){
+                        //为了提升精确度，进一步加入词频影响因素进行计算
+                        int arf = a+b;
+                        //可能会有整除0异常--------->>> 注意 <<<-----------
+                        double berta = ((double)a / ((double)a + (double)b));
+                        dx = dx * arf * berta;
+                    }
+                    System.out.println("-----> a:" + a);
+                    System.out.println("-----> b:" + b);
+                    System.out.println("-----> c:" + c);
+                    System.out.println("-----> d:" + d);
+                    System.out.println("-----> dx:" + dx);
+                    tops.put(term, dx);
+                }
+            }
+        }
+        return tops;
+    }
+
+    /** 二分类
+     * 对 1-负面类进行CHI计算
+     * @param comment_fenci_0
+     * @param comment_fenci_1
+     * @param isopt
+     * @return
+     */
+    private static Map<String,Double> jisuanCHIOf1_twoclass(List<Comment_fenci_storeString> comment_fenci_0,
+                                                            List<Comment_fenci_storeString> comment_fenci_1,
+                                                            boolean isopt) {
+        Map<String, Double> tops = new HashMap<>();
+
+        for (int i = 1; i < comment_fenci_1.size(); i++) {
+            for (int j = 0; j < comment_fenci_1.get(i).getComments_fenci().size(); j++) {
+                String term = comment_fenci_1.get(i).getComments_fenci().get(j);
+                System.out.println(term);
+
+                // 计算该词的double_x
+                if (!tops.containsValue(term)) {
+                    int a = 0;  //a表示1类中含该词的评论数
+                    int b = 0;  //b表示其余类中含该词的评论数
+                    int c = 0;  //c表示1类中不含该词的评论数
+                    int d = 0;  //d表示其余类中不含该词的评论数
+
+                    // 计算abcd：
+                    for (int m0 = 0; m0 < comment_fenci_1.size(); m0++) {
+                        if (comment_fenci_1.get(m0).getComments_fenci().contains(term)) {
+                            a++;
+                        } else {
+                            c++;
+                        }
+                    }
+                    for (int m1 = 0; m1 < comment_fenci_0.size(); m1++) {
+                        if (comment_fenci_0.get(m1).getComments_fenci().contains(term)) {
+                            b++;
+                        } else {
+                            d++;
+                        }
+                    }
+
+                    double dx;
+                    dx = (Math.pow((a * d - b * c), 2)) / ((a + b) * (c + d));
+                    //是否要求加入词频因素优化计算结果
+                    if (isopt){
+                        //为了提升精确度，进一步加入词频影响因素进行计算
+                        int arf = a+b;
+                        //可能会有整除0异常--------->>> 注意 <<<-----------
+                        double berta = ((double)a / ((double)a + (double)b));
+                        dx = dx * arf * berta;
+                    }
+                    System.out.println("-----> a:" + a);
+                    System.out.println("-----> b:" + b);
+                    System.out.println("-----> c:" + c);
+                    System.out.println("-----> d:" + d);
+                    System.out.println("-----> dx:" + dx);
+                    tops.put(term, dx);
+                }
+            }
+        }
+        return tops;
+    }
+
+    /** 四分类
      * 对 0-喜悦类 计算 CHI
      * @param comment_fenci_0
      * @param comment_fenci_1
@@ -244,7 +417,7 @@ public class FenciWithHanLpOperation {
         return tops;
     }
 
-    /**
+    /** 四分类
      * 对 1-愤怒类 计算 CHI
      * @param comment_fencis_0
      * @param comment_fencis_1
@@ -325,7 +498,7 @@ public class FenciWithHanLpOperation {
         return tops;
     }
 
-    /**
+    /** 四分类
      * 对 2-厌恶类 计算 CHI
      * @param comment_fencis_0
      * @param comment_fencis_1
@@ -408,7 +581,7 @@ public class FenciWithHanLpOperation {
         return tops;
     }
 
-    /**
+    /** 四分类
      * 对 3-低落类 计算 CHI
      * @param comment_fencis_0
      * @param comment_fencis_1
@@ -493,6 +666,7 @@ public class FenciWithHanLpOperation {
 
     /**
      * 对 Map 排序，借此选择前 N 个词为特征词：topN
+     * 仅返回特征词语（不带权值）的list集合
      * @param tops
      * @param N
      * @return
@@ -513,6 +687,37 @@ public class FenciWithHanLpOperation {
             System.out.println(mapping.getKey() + ":" + mapping.getValue());
             //获取降序排序的前100个高频词
             topN.add(mapping.getKey());
+            topNd++;
+            if (topNd == N) {
+                break;
+            }
+        }
+        return topN;
+    }
+
+    /**
+     * 对 Map 排序，借此选择前 N 个词为特征词：topN
+     * 返回形式为 Map 形式（特征词 + 权值）
+     * @param tops
+     * @param N
+     * @return
+     */
+    public static Map<String, Double> getTopN_returnMap(Map<String, Double> tops, Integer N){
+        List<Map.Entry<String, Double>> topsList = new ArrayList<>(tops.entrySet());
+        Collections.sort(topsList, new Comparator<Map.Entry<String, Double>>() {
+            //降序排序，因为开方值越大，越相关
+            @Override
+            public int compare(Map.Entry<String, Double> o1, Map.Entry<String, Double> o2) {
+                return o2.getValue().compareTo(o1.getValue());
+            }
+        });
+
+        Map<String, Double> topN = new HashMap<>();
+        int topNd = 0;
+        for (Map.Entry<String, Double> mapping : topsList) {
+            System.out.println(mapping.getKey() + ":" + mapping.getValue());
+            //获取降序排序的前100个高频词
+            topN.put(mapping.getKey(), mapping.getValue());
             topNd++;
             if (topNd == N) {
                 break;
