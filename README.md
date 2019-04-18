@@ -1,10 +1,8 @@
 # ReadMe
 #### 分类情况：
 ```$xslt
-0_happy:喜悦
-1_angry:愤怒
-2_hate:厌恶
-3_downcast:低落
+0_pos:正面
+1_neg:负面
 ```
 
 #### 训练
