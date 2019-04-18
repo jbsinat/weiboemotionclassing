@@ -21,6 +21,7 @@ public class FenciWithHanLpOperation {
     /**
      * 初始化函数
      * 存储成普通的特征词文件
+     *  - 但此方法后期只能通过单纯的词频因素来进行贝叶斯概率计算，得到的结果并不好
      */
     public static void init_sava_as_onlyhavewords(){
         String filepath_0 = "data_group/simple_data_set/0_1000_comments.txt";
@@ -65,7 +66,7 @@ public class FenciWithHanLpOperation {
         TxtFileOperation.saveAsFileWithContent(top_0_100, savePath_tezhengci_0);
         TxtFileOperation.saveAsFileWithContent(top_1_100, savePath_tezhengci_1);
 
-        // 然后存入数据库
+        // 然后存入数据库。。。
 
     }
 
@@ -90,8 +91,8 @@ public class FenciWithHanLpOperation {
 
         //进行CHI计算
         //第二个参数为false，表示没有考虑词频对CHI计算的影响
-        tops = jisuanCHIOF0_twoclass(comment_fencis_0, comment_fencis_1, false);
-        tops1 = jisuanCHIOf1_twoclass(comment_fencis_0, comment_fencis_1, false);
+        tops = jisuanCHIOF0_twoclass(comment_fencis_0, comment_fencis_1, true);
+        tops1 = jisuanCHIOf1_twoclass(comment_fencis_0, comment_fencis_1, true);
 
         System.out.println("---------------------------------------------------------");
         System.out.println("tops.size() = " + tops.size());
@@ -102,19 +103,19 @@ public class FenciWithHanLpOperation {
         TxtFileOperation.saveAsFileWithMaps(tops, "data_group/feature_word_set_all/0_happy_all.txt");
         TxtFileOperation.saveAsFileWithMaps(tops1, "data_group/feature_word_set_all/1_angry_all.txt");
 
-        // 对Map排序，藉此选择词频为 top200 的词
-        Map<String, Double> top_0_100;
-        Map<String, Double> top_1_100;
-        top_0_100 = getTopN_returnMap(tops, 500);
-        top_1_100 = getTopN_returnMap(tops1, 500);
+        // 对Map排序，藉此选择词频为 top500 的词
+        Map<String, Double> top_0_500;
+        Map<String, Double> top_1_500;
+        top_0_500 = getTopN_returnMap(tops, 500);
+        top_1_500 = getTopN_returnMap(tops1, 500);
 
         System.out.println("---------------------------------------------------------");
 
         //将top100特征词存成特征文件（包含权值）
         String savePath_tezhengci_0 = "data_group/feature_word_set/0_happy.txt";
         String savePath_tezhengci_1 = "data_group/feature_word_set/1_angry.txt";
-        TxtFileOperation.saveAsFileWithMaps(top_0_100, savePath_tezhengci_0);
-        TxtFileOperation.saveAsFileWithMaps(top_1_100, savePath_tezhengci_1);
+        TxtFileOperation.saveAsFileWithMaps(top_0_500, savePath_tezhengci_0);
+        TxtFileOperation.saveAsFileWithMaps(top_1_500, savePath_tezhengci_1);
 
         // 然后存入数据库
 

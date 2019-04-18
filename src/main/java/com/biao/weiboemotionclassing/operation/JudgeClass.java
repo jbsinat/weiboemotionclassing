@@ -180,7 +180,7 @@ public class JudgeClass {
     /**
      * 直接利用评论来进行分类概率计算
      */
-    public static void init_with_comments(String comment){
+    public static int init_with_comments(String comment){
 
         //处理评论：分词、去除停用词;然后获取 所有 原词语 的集合
         List<Term> termList = FenciWithHanLpOperation.qiefenAndDescTingyongci(comment);
@@ -212,7 +212,7 @@ public class JudgeClass {
         //2.对y1类计算
         Double p1 = getPtc_pls(stringList, py1, allWordsPath1);
 
-        outLeibie(p0, p1);
+        return outLeibie(p0, p1);
     }
 
     /**
