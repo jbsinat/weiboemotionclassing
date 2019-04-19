@@ -18,7 +18,7 @@ public class JudgeClass {
     public static void main(String[] args) {
 
         //给定一条评论：
-        String comment = "非工作时间坚决不用百度妈的、有必要内讧吗、都他妈的是人吗！。靠！联合洋鬼子对付自己手足韩度你有种！无耻的百度居然找来了美国黑客，要对付红客联盟！我已经出离愤怒了！百度不是护着棒子国就是联合外国来谋害自己人！请大家这条状态，让更多人看到百度无耻的嘴脸！\n";
+        String comment = "我去！一看特警俩字儿我晕~单兵装备，一个字“帅”；";
 
         init_with_tezhengci(comment);
 

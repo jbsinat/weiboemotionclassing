@@ -5,7 +5,9 @@ import com.hankcs.hanlp.dictionary.stopword.CoreStopWordDictionary;
 import com.hankcs.hanlp.seg.common.Term;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FenciTest {
 
@@ -22,6 +24,17 @@ public class FenciTest {
         //去除停用词
         CoreStopWordDictionary.apply(termList);
         System.out.println(termList);
+    }
+
+    @Test
+    public void bianliMap(){
+        Map<String, Double> maplist = new HashMap<>();
+        maplist.put("aaa", 1.1);
+        maplist.put("bbb", 1.2);
+        maplist.put("ccc", 1.3);
+        for (Double quanzhi : maplist.values()) {
+            System.out.println(quanzhi);
+        }
     }
 
 }

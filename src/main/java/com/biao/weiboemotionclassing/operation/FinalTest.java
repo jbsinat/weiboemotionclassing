@@ -4,6 +4,7 @@ import com.biao.weiboemotionclassing.tools.TxtFileOperation;
 import com.hankcs.hanlp.seg.common.Term;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -167,10 +168,11 @@ public class FinalTest {
 
     /**
      * 传入一条评论，计算该评论的类别--依据特征词+权重
+     * 原先使用的函数，但计算公式的理解还有点问题，准确率还行，但是在还未完全确定此种计算公式的合理性之前，最好别用
      * @param comment
      * @return
      */
-    public static Integer zhengquelvjisuan_withTezhengci(String comment){
+    public static Integer zhengquelvjisuan_withTezhengci2(String comment){
 
         //处理评论：分词、去除停用词;然后获取 所有 原词语 的集合
         List<Term> termList = FenciWithHanLpOperation.qiefenAndDescTingyongci(comment);
@@ -198,7 +200,7 @@ public class FinalTest {
         Map<String, Double> featurelist1_part = TxtFileOperation.readFeatureSetFile(tezhengWordsPath1);
 
         //对类0进行计算
-        //首先计算出∑ weight
+        //首先计算出∑ weight，即类别0的topN个特征词的权值之和
         Double p0_wei = 1.0;
         for (int i=0;i<stringList.size();i++){
             if(featurelist0_part.get(stringList.get(i)) != null){
@@ -246,6 +248,97 @@ public class FinalTest {
         System.out.println("pp1 = " + pp1);
 
         if (pp0 > pp1){
+            System.out.println("为 0 类");
+            return 0;
+        } else {
+            System.out.println("为 1 类");
+            return 1;
+        }
+
+    }
+
+    /**
+     * 传入一条评论，计算该评论的类别--依据特征词+权重
+     * @param comment
+     * @return
+     */
+    public static Integer zhengquelvjisuan_withTezhengci(String comment){
+
+        //处理评论：分词、去除停用词;然后获取 所有 原词语 的集合
+        List<Term> termList = FenciWithHanLpOperation.qiefenAndDescTingyongci(comment);
+        List<String> stringList = new ArrayList<>();
+        for (int i = 0; i < termList.size(); i++) {
+            stringList.add(termList.get(i).word);
+        }
+        System.out.println(stringList);
+
+        //先验概率:因为每种评论都有1000条，所以各类占比相同
+        double py0 = 0.5;
+        double py1 = 0.5;
+
+        //从训练过程生成的文件中获取词语，这里给出路径
+        String allWordsPath0 = "data_group/feature_word_set_all/0_happy_all.txt";
+        String allWordsPath1 = "data_group/feature_word_set_all/1_angry_all.txt";
+        String tezhengWordsPath0 = "data_group/feature_word_set/0_happy.txt";
+        String tezhengWordsPath1 = "data_group/feature_word_set/1_angry.txt";
+
+        //全部特征词
+        Map<String, Double> featurelist0_all = TxtFileOperation.readFeatureSetFile(allWordsPath0);
+        Map<String, Double> featurelist1_all = TxtFileOperation.readFeatureSetFile(allWordsPath1);
+        //topN 特征词
+        Map<String, Double> featurelist0_part = TxtFileOperation.readFeatureSetFile(tezhengWordsPath0);
+        Map<String, Double> featurelist1_part = TxtFileOperation.readFeatureSetFile(tezhengWordsPath1);
+
+        //首先计算出∑ weight，即两类中词wi的权重之和
+        double heofwordi = 0.0;
+        Map<String, Double> word_towclassquanzhongzhihe = new HashMap<>();
+        for (int i=0; i<stringList.size(); i++) {
+            heofwordi = 0.0;
+            if (featurelist0_part.get(stringList.get(i)) != null) {
+                heofwordi += Math.log10(featurelist0_part.get(stringList.get(i)));
+            }
+            if (featurelist1_part.get(stringList.get(i)) != null) {
+                heofwordi += Math.log10(featurelist1_part.get(stringList.get(i)));
+            }
+            word_towclassquanzhongzhihe.put(stringList.get(i), heofwordi);
+        }
+
+        //对类0进行计算
+        double p0 = 1.0;
+        for (int i=0;i<stringList.size();i++) {
+            if (featurelist0_part.get(stringList.get(i)) != null) {
+                p0 *= Math.pow(Math.log10(featurelist0_part.get(stringList.get(i))) / word_towclassquanzhongzhihe.get(stringList.get(i)),
+                        Math.log10(featurelist0_part.get(stringList.get(i))));
+            }
+            else {
+                if (word_towclassquanzhongzhihe.get(stringList.get(i)) != 0) {
+                    //若词wi在两个类别中的权值之和不为零，则说明词wi在类0中没有出现，但在类1中出现了
+                    //说明待分类评论中含有类0中没有而类1中有的特征词，此时，很大概率上属于该评论属于类1
+                    //我们直接将p0乘以词wi的权值之和的倒数，从而将p0快速缩小
+                    p0 *= 1 / word_towclassquanzhongzhihe.get(stringList.get(i));
+                }
+            }
+        }
+        p0 *= py0;
+        System.out.println("p0 = " + p0);
+
+        //对类1进行计算
+        double p1 = 1.0;
+        for (int i=0;i<stringList.size();i++) {
+            if (featurelist1_part.get(stringList.get(i)) != null) {
+                p1 *= Math.pow(Math.log10(featurelist1_part.get(stringList.get(i))) / word_towclassquanzhongzhihe.get(stringList.get(i)),
+                        Math.log10(featurelist1_part.get(stringList.get(i))));
+            }
+            else {
+                if (word_towclassquanzhongzhihe.get(stringList.get(i)) != 0) {
+                    p1 *= 1 / word_towclassquanzhongzhihe.get(stringList.get(i));
+                }
+            }
+        }
+        p1 *= py1;
+        System.out.println("p1 = " + p1);
+
+        if (p0 > p1){
             System.out.println("为 0 类");
             return 0;
         } else {
