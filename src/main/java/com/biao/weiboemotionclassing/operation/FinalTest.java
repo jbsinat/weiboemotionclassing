@@ -64,16 +64,28 @@ public class FinalTest {
         System.out.println("TN = " +TN);
         System.out.println("FN = " +FN);
 
-        double accuracy,precision,recall,F_mearsure;
+        double accuracy,
+                pp_precision,   //正面类的精确率
+                pn_precision,   //负面类的精确率
+                rp_recall,      //正面类的召回率
+                rn_recall,      //负面类的召回率
+                Fp_measure,    //正面类的F值
+                Fn_measure;    //负面类的F值
         accuracy = (TP + TN) / (TP + FP + TN + FN);
-        precision = TP / (TP + FP);
-        recall = TP / (TP + FN);
-        F_mearsure = 2 / (1/precision + 1/recall);
+        pp_precision = TP / (TP + FP);
+        pn_precision = TN / (FN + TN);
+        rp_recall = TP / (TP + FN);
+        rn_recall = TN / (TN +FP);
+        Fp_measure = 2 / (1/pp_precision + 1/rp_recall);
+        Fn_measure = 2 / (1/pn_precision + 1/rn_recall);
 
         System.out.println("accuracy = " + accuracy);
-        System.out.println("precision = " + precision);
-        System.out.println("recall = " + recall);
-        System.out.println("F-mearsure = " + F_mearsure);
+        System.out.println("pp_precision = " + pp_precision);
+        System.out.println("pn_precision = " + pn_precision);
+        System.out.println("rp_recall = " + rp_recall);
+        System.out.println("rn_recall = " + rn_recall);
+        System.out.println("Fp_measure = " + Fp_measure);
+        System.out.println("Fn_measure = " + Fn_measure);
 
     }
 
@@ -118,16 +130,28 @@ public class FinalTest {
         System.out.println("TN = " +TN);
         System.out.println("FN = " +FN);
 
-        double accuracy,precision,recall,F_mearsure;
+        double accuracy,
+                pp_precision,   //正面类的精确率
+                pn_precision,   //负面类的精确率
+                rp_recall,      //正面类的召回率
+                rn_recall,      //负面类的召回率
+                Fp_measure,    //正面类的F值
+                Fn_measure;    //负面类的F值
         accuracy = (TP + TN) / (TP + FP + TN + FN);
-        precision = TP / (TP + FP);
-        recall = TP / (TP + FN);
-        F_mearsure = 2 / (1/precision + 1/recall);
+        pp_precision = TP / (TP + FP);
+        pn_precision = TN / (FN + TN);
+        rp_recall = TP / (TP + FN);
+        rn_recall = TN / (TN +FP);
+        Fp_measure = 2 / (1/pp_precision + 1/rp_recall);
+        Fn_measure = 2 / (1/pn_precision + 1/rn_recall);
 
         System.out.println("accuracy = " + accuracy);
-        System.out.println("precision = " + precision);
-        System.out.println("recall = " + recall);
-        System.out.println("F-mearsure = " + F_mearsure);
+        System.out.println("pp_precision = " + pp_precision);
+        System.out.println("pn_precision = " + pn_precision);
+        System.out.println("rp_recall = " + rp_recall);
+        System.out.println("rn_recall = " + rn_recall);
+        System.out.println("Fp_measure = " + Fp_measure);
+        System.out.println("Fn_measure = " + Fn_measure);
     }
 
     /**
@@ -277,14 +301,14 @@ public class FinalTest {
         double py1 = 0.5;
 
         //从训练过程生成的文件中获取词语，这里给出路径
-        String allWordsPath0 = "data_group/feature_word_set_all/0_happy_all.txt";
-        String allWordsPath1 = "data_group/feature_word_set_all/1_angry_all.txt";
+//        String allWordsPath0 = "data_group/feature_word_set_all/0_happy_all.txt";
+//        String allWordsPath1 = "data_group/feature_word_set_all/1_angry_all.txt";
         String tezhengWordsPath0 = "data_group/feature_word_set/0_happy.txt";
         String tezhengWordsPath1 = "data_group/feature_word_set/1_angry.txt";
 
         //全部特征词
-        Map<String, Double> featurelist0_all = TxtFileOperation.readFeatureSetFile(allWordsPath0);
-        Map<String, Double> featurelist1_all = TxtFileOperation.readFeatureSetFile(allWordsPath1);
+//        Map<String, Double> featurelist0_all = TxtFileOperation.readFeatureSetFile(allWordsPath0);
+//        Map<String, Double> featurelist1_all = TxtFileOperation.readFeatureSetFile(allWordsPath1);
         //topN 特征词
         Map<String, Double> featurelist0_part = TxtFileOperation.readFeatureSetFile(tezhengWordsPath0);
         Map<String, Double> featurelist1_part = TxtFileOperation.readFeatureSetFile(tezhengWordsPath1);
@@ -319,6 +343,7 @@ public class FinalTest {
                 }
             }
         }
+        //再乘上先验概率
         p0 *= py0;
         System.out.println("p0 = " + p0);
 

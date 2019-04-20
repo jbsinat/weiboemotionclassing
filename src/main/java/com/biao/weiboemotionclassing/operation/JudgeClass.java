@@ -129,7 +129,7 @@ public class JudgeClass {
     }
 
     /**
-     * 利用特征词来进行分类概率计算
+     * 仅利用特征词来进行分类概率计算
      * ---------------该方法算得的正确率很低，现已抛弃该方法---------------
      */
     public static void init(String comment){
@@ -273,7 +273,7 @@ public class JudgeClass {
      * @return
      */
     public static Double getPtc_pls(List<String> stringList, Double xianYanGaiLv, String path) {
-        List<Double> p_a0s = new ArrayList<>();
+        List<Double> p_as = new ArrayList<>();
         //
         Double p = 1.0;
         for (int k1 = 0; k1 < stringList.size(); k1++) {
@@ -283,18 +283,18 @@ public class JudgeClass {
             System.out.println("Ycx = " + Ycx);
             //不含该词的评论数
             Double NYcx = 1000 - Ycx;
-
+            //使用拉普拉斯平滑，将所有词频加1，避免0概率的出现
             p = ((Ycx + 1) / 1000);
             System.out.println("p " + k1 + " = " + p);
-            p_a0s.add(p);
+            p_as.add(p);
         }
         //p(y_i)，当前类的概率，为1
-        Double p0 = 1.0;
-        for (int k2 = 0; k2 < p_a0s.size(); k2++){
-            p0 = p0 * p_a0s.get(k2);
+        Double p_i = 1.0;
+        for (int k = 0; k < p_as.size(); k++){
+            p_i = p_i * p_as.get(k);
         }
-        p0 = p0 * xianYanGaiLv;    //可以看成是属于 0 类的概率
-        return p0;
+        p_i = p_i * xianYanGaiLv;    //可以看成是属于 0 类的概率
+        return p_i;
     }
 
     /**
