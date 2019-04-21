@@ -99,7 +99,14 @@ public class JudgeClass {
         p1 *= py1;
         System.out.println("p1 = " + p1);
 
-        return outLeibie(p0, p1);
+        if (p0 >= p1) {
+            System.out.println("是 0-正面类");
+            return 0;
+        } else {
+            System.out.println("是 1-负面类");
+            return 1;
+        }
+
     }
 
     /**

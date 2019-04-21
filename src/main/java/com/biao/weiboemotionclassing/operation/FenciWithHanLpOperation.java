@@ -18,7 +18,7 @@ public class FenciWithHanLpOperation {
 //        init_save_as_map(true, 500);    //true表示开启词频因素影响，500表示选取500个权值最高的作为当前类的特征词集合
 
         //最终版
-        init_save_as_map_final(true, 0);  //true表示开启词频因素影响，200表示选取的维度，CHI值在此之上都会被选中为特征词
+        init_save_as_map_final(true, 5000);  //true表示开启词频因素影响，200表示选取的维度，CHI值在此之上都会被选中为特征词
     }
 
     /**
@@ -342,7 +342,7 @@ public class FenciWithHanLpOperation {
                     //是否要求加入词频因素优化计算结果
                     if (isopt){
                         //为了提升精确度，进一步加入词频影响因素进行计算
-                        int arf = 100;//a+b;
+                        int arf = 10;
                         //只有a、b同时为0时才会有整除0异常，此时分子也为0，可令berta为1，相乘后对dx没有影响
                         double berta;
                         try{
@@ -352,6 +352,10 @@ public class FenciWithHanLpOperation {
                         }
                         dx = dx * arf * berta;
                     }
+//                    if (!isopt) {
+//                        //因为阈值是确定的，所以未开启优化也要相应放大
+//                        dx *= 10;
+//                    }
                     System.out.println("-----> a:" + a);
                     System.out.println("-----> b:" + b);
                     System.out.println("-----> c:" + c);
@@ -412,7 +416,7 @@ public class FenciWithHanLpOperation {
                     //是否要求加入词频因素优化计算结果
                     if (isopt){
                         //为了提升精确度，进一步加入词频影响因素进行计算
-                        int arf = 100;
+                        int arf = 10;
                         double berta;
                         try {
                             berta = ((double)a / ((double)a + (double)b));
@@ -421,6 +425,9 @@ public class FenciWithHanLpOperation {
                         }
                         dx = dx * arf * berta;
                     }
+//                    if (!isopt) {
+//                        dx *= 10;
+//                    }
                     System.out.println("-----> a:" + a);
                     System.out.println("-----> b:" + b);
                     System.out.println("-----> c:" + c);
