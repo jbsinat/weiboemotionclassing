@@ -98,7 +98,7 @@ public class FenciWithHanLpOperation {
         System.out.println("tops.size() = " + tops.size());
         System.out.println("tops1.size() = " + tops1.size());
 
-        //将所有特征词存入文件中：用于后面使用贝叶斯算法进行概率计算（但利用特征词作为概率计算依据会导致正确率很低，大概50-60%，所以后面将直接使用评论）
+        //将所有特征词存入文件中：用于后面使用贝叶斯算法进行概率计算
         //由于使用Map存储特征值，所以此时的特征值不会有重复
         TxtFileOperation.saveAsFileWithMaps(tops, "data_group/feature_word_set_all/0_happy_all.txt");
         TxtFileOperation.saveAsFileWithMaps(tops1, "data_group/feature_word_set_all/1_angry_all.txt");
