@@ -16,7 +16,7 @@ import java.util.Map;
 public class TxtFileOperation {
 
     /**
-     * 返回 Map 形式的特征词集合
+     * 返回 Map 形式的特征词集合:Map<String, Double>
      * @param path
      * @return
      */
@@ -27,6 +27,22 @@ public class TxtFileOperation {
 //            System.out.println(list.get(i));
             String[] li = list.get(i).split(":");
             featureList.put(li[0], new Double(li[1]));
+        }
+        return featureList;
+    }
+
+    /**
+     * 返回 Map 形式的特征词集合:Map<String, Integer>
+     * @param path
+     * @return
+     */
+    public static Map<String, Integer> readFeatureSetFile_Str_Int(String path) {
+        Map<String, Integer> featureList = new HashMap<>();
+        List<String> list = TxtFileOperation.readAllLinesWithContent(path);
+        for (int i=0;i<list.size();i++){
+//            System.out.println(list.get(i));
+            String[] li = list.get(i).split(":");
+            featureList.put(li[0], new Integer(li[1]));
         }
         return featureList;
     }
@@ -219,11 +235,33 @@ public class TxtFileOperation {
      * @param tops
      * @param s
      */
-    public static void saveAsFileWithMaps(Map<String, Double> tops, String filepath) {
+    public static void saveAsFileWithMaps(Map<String, Double> tops, String filepath, boolean isaddFeatureWeight) {
         List<String> features = new ArrayList<>();
         //遍历键值，即特征词
         for (String key : tops.keySet()) {
-            features.add(key + ":" + tops.get(key));
+            if (isaddFeatureWeight) {
+                features.add(key + ":" + tops.get(key));
+            } else {
+                features.add(key);
+            }
+        }
+        saveAsFileWithContent(features, filepath);
+    }
+
+    /**
+     * 将传过来的map形式的特征词集合存到文件中
+     * @param tops
+     * @param s
+     */
+    public static void saveAsFileWithMaps_Str_Int(Map<String, Integer> tops, String filepath, boolean isaddFeatureWeight) {
+        List<String> features = new ArrayList<>();
+        //遍历键值，即特征词
+        for (String key : tops.keySet()) {
+            if (isaddFeatureWeight) {
+                features.add(key + ":" + tops.get(key));
+            } else {
+                features.add(key);
+            }
         }
         saveAsFileWithContent(features, filepath);
     }

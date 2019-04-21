@@ -18,9 +18,120 @@ public class FinalTest {
 //        init_test_with_comments();
 
         //利用卡方验证计算得到的特征词来测试
-        init_test_with_tezhengci();
+//        init_test_with_tezhengci();
+
+        init_test_with_tezhengci_final();
 
     }
+
+    /**
+     * 利用CHI来进行测试计算-依据特征词+权重
+     */
+    public static void init_test_with_tezhengci_final() {
+        /**
+         * TP：样本为正，预测结果为正；
+         * FP：样本为负，预测结果为正；
+         * TN：样本为负，预测结果为负；
+         * FN：样本为正，预测结果为负。
+         */
+        double TP=0,FP=0,FN=0,TN=0;
+
+        List<String> testList_0 = TxtFileOperation.readAllLinesWithContent("data_group/test_data_set/0_1000_happy_test.txt");
+        List<String> testList_1 = TxtFileOperation.readAllLinesWithContent("data_group/test_data_set/1_1000_angry_test.txt");
+
+        //对正面类测试
+        for (int i=0;i<testList_0.size();i++) {
+            if (JudgeClass.init_with_tezhengci_final(testList_0.get(i)) == 0) {
+                //样本为正，预测结果为正
+                TP++;
+            } else {
+                //样本为正，预测结果为负
+                FN++;
+            }
+        }
+        //对负面类测试
+        for (int i=0;i<testList_1.size();i++) {
+            if (JudgeClass.init_with_tezhengci_final(testList_1.get(i)) == 0) {
+                //样本为负，预测结果为正
+                FP++;
+            } else {
+                //样本为负，预测结果为负
+                TN++;
+            }
+        }
+
+        System.out.println("TP = " +TP);
+        System.out.println("FP = " +FP);
+        System.out.println("TN = " +TN);
+        System.out.println("FN = " +FN);
+
+        double accuracy,
+                pp_precision,   //正面类的精确率
+                pn_precision,   //负面类的精确率
+                rp_recall,      //正面类的召回率
+                rn_recall,      //负面类的召回率
+                Fp_measure,    //正面类的F值
+                Fn_measure;    //负面类的F值
+        accuracy = (TP + TN) / (TP + FP + TN + FN);
+        pp_precision = TP / (TP + FP);
+        pn_precision = TN / (FN + TN);
+        rp_recall = TP / (TP + FN);
+        rn_recall = TN / (TN +FP);
+        Fp_measure = 2 / (1/pp_precision + 1/rp_recall);
+        Fn_measure = 2 / (1/pn_precision + 1/rn_recall);
+
+        System.out.println("accuracy = " + accuracy);
+        System.out.println("pp_precision = " + pp_precision);
+        System.out.println("pn_precision = " + pn_precision);
+        System.out.println("rp_recall = " + rp_recall);
+        System.out.println("rn_recall = " + rn_recall);
+        System.out.println("Fp_measure = " + Fp_measure);
+        System.out.println("Fn_measure = " + Fn_measure);
+    }
+
+
+    /**
+     * 传入一条评论，计算该评论的类别--直接依据评论
+     * @param comment
+     * @return
+     */
+    public static Integer zhengquelvjisuan_withTezhengci_final(String comment){
+
+        //处理评论：分词、去除停用词;然后获取 所有 原词语 的集合
+        List<Term> termList = FenciWithHanLpOperation.qiefenAndDescTingyongci(comment);
+        List<String> stringList = new ArrayList<>();
+        for (int i = 0; i < termList.size(); i++) {
+            stringList.add(termList.get(i).word);
+        }
+        System.out.println(stringList);
+
+        //先验概率:因为每种评论都有1000条，所以各类占比相同
+        double py0 = 0.5;
+        double py1 = 0.5;
+
+        //从训练过程生成的文件中获取词语，这里给出路径
+        String allWordsPath0 = "data_group/simple_data_set/0_1000_comments.txt";
+        String allWordsPath1 = "data_group/simple_data_set/1_1000_comments.txt";
+
+        //1.对y0类计算
+        Double p0 = JudgeClass.getPtc_pls(stringList, py0, allWordsPath0);
+        //2.对y1类计算
+        Double p1 = JudgeClass.getPtc_pls(stringList, py1, allWordsPath1);
+        System.out.println("p1:" + p1);
+
+        //5.比较p0、p1、p2、p3,选择最大者则当前评论属于该类
+        int class_ = JudgeClass.outLeibie(p0,p1);
+        return class_;
+    }
+
+
+
+
+
+
+
+
+
 
     /**
      * 直接利用评论语料集来进行测试计算
@@ -39,7 +150,7 @@ public class FinalTest {
 
         //对正面类测试
         for (int i=0;i<testList_0.size();i++) {
-            if (zhengquelvjisuan_withComments(testList_0.get(i)) == 0) {
+            if (JudgeClass.init_with_comments_withTopN_featureWord(testList_0.get(i)) == 0) {
                 //样本为正，预测结果为正
                 TP++;
             } else {
@@ -49,7 +160,7 @@ public class FinalTest {
         }
         //对负面类测试
         for (int i=0;i<testList_1.size();i++) {
-            if (zhengquelvjisuan_withComments(testList_1.get(i)) == 0) {
+            if (JudgeClass.init_with_comments_withTopN_featureWord(testList_1.get(i)) == 0) {
                 //样本为负，预测结果为正
                 FP++;
             } else {

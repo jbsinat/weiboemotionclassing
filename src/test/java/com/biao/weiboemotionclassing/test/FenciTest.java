@@ -13,7 +13,7 @@ public class FenciTest {
 
     @Test
     public void testFenci(){
-        String comment = "昨晚上经过中润，看到的一个立柱，价格应该不低，可是看了半天也没看明白诉求点是什么";
+        String comment = "嘻嘻、哈哈、嘿嘿、呵呵。一笑烦恼跑，二笑怒气消，三笑憾事了，四笑病魔逃，五笑人不老，六笑乐逍遥。天天开口笑，寿比彭祖高。为什么不能笑一笑呢，你是唯一的，你的笑容也是唯一的，哪怕微笑。";
         List<Term> termList;
         // 将一些富含繁体字的评论转化成简体字版的评论
         HanLP.convertToSimplifiedChinese(comment);
