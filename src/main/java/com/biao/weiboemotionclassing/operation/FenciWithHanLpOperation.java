@@ -21,7 +21,7 @@ public class FenciWithHanLpOperation {
     /**
      * 初始化函数
      * 存储成普通的特征词文件
-     *  - 但此方法后期只能通过单纯的词频因素来进行贝叶斯概率计算，得到的结果并不好
+     *  - 但此方法后期只能通过单纯的词频因素来进行贝叶斯概率计算，得到的结果并不好，故此种方式不建议使用
      */
     public static void init_sava_as_onlyhavewords(){
         String filepath_0 = "data_group/simple_data_set/0_1000_comments.txt";
@@ -159,12 +159,11 @@ public class FenciWithHanLpOperation {
 
             contentAfterChooses.add(termList);
         }
-
         return contentAfterChooses;
     }
 
     /**
-     * 进队单个字符串进行分词操作
+     * 仅对单个字符串进行分词操作
      * @param comment
      * @return ：返回分词结果
      */
@@ -258,8 +257,13 @@ public class FenciWithHanLpOperation {
                     if (isopt){
                         //为了提升精确度，进一步加入词频影响因素进行计算
                         int arf = a+b;
-                        //可能会有整除0异常--------->>> 注意 <<<-----------
-                        double berta = ((double)a / ((double)a + (double)b));
+                        //只有a、b同时为0时才会有整除0异常，此时分子也为0，可令berta为1，相乘后对dx没有影响
+                        double berta;
+                        try{
+                            berta = ((double)a / ((double)a + (double)b));
+                        } catch (Exception e) {
+                            berta = 1.0;
+                        }
                         dx = dx * arf * berta;
                     }
                     System.out.println("-----> a:" + a);
@@ -320,8 +324,12 @@ public class FenciWithHanLpOperation {
                     if (isopt){
                         //为了提升精确度，进一步加入词频影响因素进行计算
                         int arf = a+b;
-                        //可能会有整除0异常--------->>> 注意 <<<-----------
-                        double berta = ((double)a / ((double)a + (double)b));
+                        double berta;
+                        try {
+                            berta = ((double)a / ((double)a + (double)b));
+                        } catch (Exception e) {
+                            berta = 1.0;
+                        }
                         dx = dx * arf * berta;
                     }
                     System.out.println("-----> a:" + a);
@@ -335,6 +343,8 @@ public class FenciWithHanLpOperation {
         }
         return tops;
     }
+
+    //------------------------------四分类下的CHI计算举例--------------------------------
 
     /** 四分类
      * 对 0-喜悦类 计算 CHI
