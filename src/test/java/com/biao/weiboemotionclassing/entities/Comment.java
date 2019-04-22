@@ -1,14 +1,14 @@
 package com.biao.weiboemotionclassing.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+//import javax.persistence.Entity;
+//import javax.persistence.GeneratedValue;
+//import javax.persistence.Id;
 
-@Entity
+//@Entity
 public class Comment {
 
-    @Id
-    @GeneratedValue     //主键自增
+//    @Id
+//    @GeneratedValue     //主键自增
     private int id;
 
     private String category;

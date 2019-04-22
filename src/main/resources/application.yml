@@ -2,13 +2,14 @@ spring:
   profiles:
     # 在这里指定是使用生产还是开发环境
     active: dev
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/dbemotionclassing?serverTimezone=UTC
-    username: root
-    password: root
-  jpa:
-    hibernate:
-      # update 指定每启动项目只是更新数据库
-      ddl-auto: update
-    show-sql: true
+    # 不使用数据库并将数据库配置注释掉时，同时也要注释掉maven中对数据库的依赖，同时也要注释掉实体类等类中使用的数据库依赖相关代码
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://127.0.0.1:3306/dbemotionclassing?serverTimezone=UTC
+#    username: root
+#    password: root
+#  jpa:
+#    hibernate:
+#      # update 指定每启动项目只是更新数据库
+#      ddl-auto: update
+#    show-sql: true

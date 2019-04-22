@@ -36,8 +36,8 @@ public class mainController {
         Map<String, Integer> quanzhong0 = new HashMap<>();
         Map<String, Integer> quanzhong1 = new HashMap<>();
         //全部特征词文件存储路径
-        String allWordsPath0 = "data_group/feature_word_set/0_happy_all_with_boolQZ.txt";
-        String allWordsPath1 = "data_group/feature_word_set/1_angry_all_with_boolQZ.txt";
+        String allWordsPath0 = "data_group/feature_word_set/0_pos_all_with_boolQZ.txt";
+        String allWordsPath1 = "data_group/feature_word_set/1_neg_all_with_boolQZ.txt";
         Map<String, Integer> featurelist0_all = TxtFileOperation.readFeatureSetFile_Str_Int(allWordsPath0);
         Map<String, Integer> featurelist1_all = TxtFileOperation.readFeatureSetFile_Str_Int(allWordsPath1);
         //0类下的各词权值
@@ -49,10 +49,10 @@ public class mainController {
             quanzhong1.put(comment_fenci.get(i).word, featurelist1_all.get(comment_fenci.get(i).word));
         }
         //分类
-        //1.利用特征词
-//        int class_ = JudgeClass.init_with_tezhengci_final(comment);
-        //2.利用评论
-        int class_ = JudgeClass.init_with_comments(comment);
+        //1.利用 特征词及对应的权重 并利用贝叶斯算法计算（此种方式处理速度更快，因为利用了前面特征提取与权值计算过程的处理结果）
+        int class_ = JudgeClass.init_with_tezhengci_final(comment);
+        //2.利用 评论数据直接统计 并利用贝叶斯算法计算
+//        int class_ = JudgeClass.init_with_comments(comment);
         String cl = (class_ == 0)?"0":"1";
         return Msg.success().add("comment_seg", comment_fenci).add("featureWeight_0", quanzhong0).add("featureWeight_1", quanzhong1).add("class", cl);
     }
