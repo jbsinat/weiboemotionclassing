@@ -4,14 +4,14 @@ import com.biao.weiboemotionclassing.tools.TxtFileOperation;
 import java.util.List;
 
 /**
- * 四、情感分类第四步：测试集正确率测试
+ * 四、情感分类第四步：使用分类函数对测试集进行测试，得到accuracy、precision、reca、F1-measure四个模型评价指标
  */
 public class FinalTest {
 
     public static void main(String[] args) {
 
         //利用评论语料集来测试
-        init_test_with_comments();
+//        init_test_with_comments();
 
         //利用卡方验证计算得到的特征词来测试
         init_test_with_tezhengci_final();

@@ -9,9 +9,9 @@ import com.hankcs.hanlp.seg.common.Term;
 import java.util.*;
 
 /**
- * 二、情感分类第二步：利用HanLp进行分词相关操作
- * CHI计算、使用相应阈值进行特征提取
- * 特征权值计算
+ * 二、情感分类第二步：利用HanLp进行分词相关操作，包括：
+ *  1.CHI计算、使用相应阈值进行特征提取
+ *  2.特征权值计算
  */
 public class FenciWithHanLpOperation {
 
