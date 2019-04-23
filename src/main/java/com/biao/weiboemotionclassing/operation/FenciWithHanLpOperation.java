@@ -17,7 +17,7 @@ public class FenciWithHanLpOperation {
 
     public static void main(String[] args) {
         //最终版
-        init_save_as_map_final(true, 5000);  //true表示开启词频因素影响，200表示选取的维度，CHI值在此之上都会被选中为特征词
+        init_save_as_map_final(true, 2000);  //true表示开启词频因素影响，200表示选取的维度，CHI值在此之上都会被选中为特征词
     }
 
     /**

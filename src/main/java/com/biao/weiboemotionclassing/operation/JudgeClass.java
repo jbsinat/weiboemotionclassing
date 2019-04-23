@@ -101,12 +101,15 @@ public class JudgeClass {
         p1 *= py1;
         System.out.println("p1 = " + p1);
 
-        if (p0 >= p1) {
+        if (p0 > p1) {
             System.out.println("是 0-正面类");
             return 0;
-        } else {
+        } else if (p0 < p1){
             System.out.println("是 1-负面类");
             return 1;
+        } else {
+            System.out.println("无法对当前评论完成分类");
+            return -1;
         }
 
     }
@@ -160,9 +163,12 @@ public class JudgeClass {
         if(p0 > p1){
             System.out.println("当前评论类别为： " + "0-正面");
             return 0;
-        } else {
+        } else if (p0 < p1){
             System.out.println("当前评论类别为： " + "1-负面");
             return 1;
+        } else {
+            System.out.println("数据不足，无法完成当前评论分类");
+            return -1;
         }
     }
 

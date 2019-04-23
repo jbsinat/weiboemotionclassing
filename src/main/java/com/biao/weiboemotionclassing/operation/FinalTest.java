@@ -35,20 +35,22 @@ public class FinalTest {
 
         //对正面类测试
         for (int i=0;i<testList_0.size();i++) {
-            if (JudgeClass.init_with_tezhengci_final(testList_0.get(i)) == 0) {
+            int cls = JudgeClass.init_with_tezhengci_final(testList_0.get(i));
+            if (cls == 0) {
                 //样本为正，预测结果为正
                 TP++;
-            } else {
+            } else if (cls == 1){
                 //样本为正，预测结果为负
                 FN++;
             }
         }
         //对负面类测试
         for (int i=0;i<testList_1.size();i++) {
-            if (JudgeClass.init_with_tezhengci_final(testList_1.get(i)) == 0) {
+            int cls = JudgeClass.init_with_tezhengci_final(testList_1.get(i));
+            if (cls == 0) {
                 //样本为负，预测结果为正
                 FP++;
-            } else {
+            } else if (cls == 1){
                 //样本为负，预测结果为负
                 TN++;
             }
@@ -100,23 +102,32 @@ public class FinalTest {
 
         //对正面类测试
         for (int i=0;i<testList_0.size();i++) {
-            if (JudgeClass.init_with_comments(testList_0.get(i)) == 0) {
+            int cls = JudgeClass.init_with_comments(testList_0.get(i));
+            if (cls == 0) {
                 //样本为正，预测结果为正
                 TP++;
-            } else {
+            }
+            else if (cls == 1){
                 //样本为正，预测结果为负
                 FN++;
             }
+//            else {
+//                FN++;
+//            }
         }
         //对负面类测试
         for (int i=0;i<testList_1.size();i++) {
-            if (JudgeClass.init_with_comments(testList_1.get(i)) == 0) {
+            int cls = JudgeClass.init_with_comments(testList_1.get(i));
+            if (cls == 0) {
                 //样本为负，预测结果为正
                 FP++;
-            } else {
+            } else if (cls == 1){
                 //样本为负，预测结果为负
                 TN++;
             }
+//            else {
+//                TN++;
+//            }
         }
 
         System.out.println("TP = " +TP);
