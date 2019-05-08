@@ -53,7 +53,7 @@ public class mainController {
         int class_ = JudgeClass.init_with_tezhengci_final(comment);
         //2.利用 评论数据直接统计 并利用贝叶斯算法计算
 //        int class_ = JudgeClass.init_with_comments(comment);
-        String cl = (class_ == 0)?"0":"1";
+        String cl = String.valueOf(class_);
         return Msg.success().add("comment_seg", comment_fenci).add("featureWeight_0", quanzhong0).add("featureWeight_1", quanzhong1).add("class", cl);
     }
 
