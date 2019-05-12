@@ -1,7 +1,10 @@
 package com.biao.weiboemotionclassing.operation;
 
 import com.biao.weiboemotionclassing.tools.TxtFileOperation;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 四、情感分类第四步：使用分类函数对测试集进行测试，得到accuracy、precision、reca、F1-measure四个模型评价指标
@@ -21,7 +24,7 @@ public class FinalTest {
     /**
      * 利用CHI来进行测试计算-依据特征词+权重
      */
-    public static void init_test_with_tezhengci_final() {
+    public static Map<String, Double> init_test_with_tezhengci_final() {
         /**
          * TP：样本为正，预测结果为正；
          * FP：样本为负，预测结果为正；
@@ -83,6 +86,17 @@ public class FinalTest {
         System.out.println("rn_recall = " + rn_recall);
         System.out.println("Fp_measure = " + Fp_measure);
         System.out.println("Fn_measure = " + Fn_measure);
+
+        Map<String, Double> indexs = new HashMap<>();
+        indexs.put("accuracy", accuracy);
+        indexs.put("pp_precision", pp_precision);
+        indexs.put("pn_precision", pn_precision);
+        indexs.put("rp_recall", rp_recall);
+        indexs.put("rn_recall", rn_recall);
+        indexs.put("Fp_measure", Fp_measure);
+        indexs.put("Fn_measure", Fn_measure);
+
+        return indexs;
     }
 
     /**

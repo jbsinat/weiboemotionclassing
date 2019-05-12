@@ -1,6 +1,7 @@
 package com.biao.weiboemotionclassing.controller;
 
 import com.biao.weiboemotionclassing.operation.FenciWithHanLpOperation;
+import com.biao.weiboemotionclassing.operation.FinalTest;
 import com.biao.weiboemotionclassing.operation.JudgeClass;
 import com.biao.weiboemotionclassing.tools.Msg;
 import com.biao.weiboemotionclassing.tools.TxtFileOperation;
@@ -55,6 +56,17 @@ public class mainController {
 //        int class_ = JudgeClass.init_with_comments(comment);
         String cl = String.valueOf(class_);
         return Msg.success().add("comment_seg", comment_fenci).add("featureWeight_0", quanzhong0).add("featureWeight_1", quanzhong1).add("class", cl);
+    }
+
+    /**
+     * 返回测试集的分类器测试结果
+     * @return
+     */
+    @GetMapping(value = "/testdataset")
+    public Msg ceshiji() {
+        Map<String, Double> indexs = new HashMap<>();
+        indexs = FinalTest.init_test_with_tezhengci_final();
+        return Msg.success().add("indexs", indexs);
     }
 
 }
