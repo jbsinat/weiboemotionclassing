@@ -145,3 +145,5 @@
 主要的4步处理见：[核心分类代码，按步骤](https://github.com/sinat-biao/weiboemotionclassing/tree/master/src/main/java/com/biao/weiboemotionclassing/operation)。
 
 开发过程中所写过并调试过的所有函数和类都放进`test`目录下存档了，`src`目录下仅保留了最后确定和使用的代码。
+
+> 前端页面详见：https://github.com/sinat-biao/weiboemotionClassing_client
