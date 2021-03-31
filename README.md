@@ -20,19 +20,19 @@
 
   - 词袋模型：是个在自然语言处理和信息检索下被简化的表达模型。通过将句子分成词语的集合，依据不同的极性分别放到不同的词袋中，每个词袋表示一种类别。
 
-    ```
-    			   句子分词结果：c1,c2,c3,c4,c5,c6
+    ```shell
+    	                              句子分词结果：c1,c2,c3,c4,c5,c6
     						   /    \
-    						  /	     \
+    						  /      \
     						 /        \
-    			   词袋1：c1,c3,c5  词袋2：c2,c4,c6
+    	                              词袋1：c1,c3,c5  词袋2：c2,c4,c6
     ```
 
   - 特征权值：指特征词在文本语料集中的权重，文本分类领域常用的有 bool 权重、TF、TF-IDF 等，由于评论语料短小的特点，选择 bool 权重：
-    $$
-    bool(w_i) = \begin{cases} 1, & \text w_i \in d \\ 0, & \text w_i \notin d \end{cases}
-    $$
-    其中 $w_i \in d$ 表示词 $w_i$ 属于文本 $d$。
+  
+    <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;bool(w_i)&space;=&space;\begin{cases}&space;1,&space;&&space;\text&space;w_i&space;\in&space;d&space;\\&space;0,&space;&&space;\text&space;w_i&space;\notin&space;d&space;\end{cases}" title="bool(w_i) = \begin{cases} 1, & \text w_i \in d \\ 0, & \text w_i \notin d \end{cases}" />
+    
+    其中 <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;w_i&space;\in&space;d" title="w_i \in d" /> 表示词 <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;w_i" title="w_i" /> 属于文本 <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;d" title="d" />。
 
   <img src="https://note.youdao.com/yws/public/resource/30dbf02d1f596871f96b3bac4a78188f/xmlnote/3D48515EB85041E7A7B2615EF8FB33BE/8571" style="zoom: 60%;" />
 
@@ -49,41 +49,39 @@
     |                          |   A+C    |   B+D    |  N   |
 
   - 卡方公式：
-    $$
-    x^2(t,c) = \frac {N * (AD-BC)^2} {(A+C)(B+D)(A+B)(C+D)}
-    $$
+    
+    <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;x^2(t,c)&space;=&space;\frac&space;{N&space;*&space;(AD-BC)^2}&space;{(A&plus;C)(B&plus;D)(A&plus;B)(C&plus;D)}" title="x^2(t,c) = \frac {N * (AD-BC)^2} {(A+C)(B+D)(A+B)(C+D)}" />
 
   - 改进：
-    $$
-    x^2(t,c) = \frac {N * (AD-BC)^2} {(A+C)(B+D)(A+B)(C+D)} * arf * berta
-    $$
-    其中 $arf$ 为词 t 在文档 c 中出现的频次，$berta$ 为类内正确率，其定义为：$berta=\frac{A}{A+B}$
+    
+    <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;x^2(t,c)&space;=&space;\frac&space;{N&space;*&space;(AD-BC)^2}&space;{(A&plus;C)(B&plus;D)(A&plus;B)(C&plus;D)}&space;*&space;arf&space;*&space;berta" title="x^2(t,c) = \frac {N * (AD-BC)^2} {(A+C)(B+D)(A+B)(C+D)} * arf * berta" />
+    
+    其中 <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;arf" title="arf" /> 为词 t 在文档 c 中出现的频次，<img src="https://latex.codecogs.com/png.image?\dpi{110}&space;berta" title="berta" /> 为类内正确率，其定义为：<img src="https://latex.codecogs.com/png.image?\dpi{110}&space;berta=\frac{A}{A&plus;B}" title="berta=\frac{A}{A+B}" />
 
 - 分类器选择
 
   <img src="https://note.youdao.com/yws/public/resource/30dbf02d1f596871f96b3bac4a78188f/xmlnote/B97AB38C9F1C47B1B1C96B59965F937D/8575" style="zoom:60%;" />
 
   - 贝叶斯定理：
-    $$
-    p(B_i|A) = \frac{p(B_i)(P(A|B_i))} {\sum^n_{j=1}Num(c_j)}
-    $$
+    
+    <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;p(B_i|A)&space;=&space;\frac{p(B_i)(P(A|B_i))}&space;{\sum^n_{j=1}Num(c_j)}" title="p(B_i|A) = \frac{p(B_i)(P(A|B_i))} {\sum^n_{j=1}Num(c_j)}" />
 
     - 先验概率：
-      $$
-      P(c_i)=\frac{Num(c_i)}{\sum^n_{j=1}Num(c_j)}
-      $$
-      即含有词 $c_j$ 的文档数除以总文档数
+      
+      <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;P(c_i)=\frac{Num(c_i)}{\sum^n_{j=1}Num(c_j)}" title="P(c_i)=\frac{Num(c_i)}{\sum^n_{j=1}Num(c_j)}" />
+      
+      即含有词 <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;c_j" title="c_j" /> 的文档数除以总文档数
 
     - 后验概率：
-      $$
-      P(d_i|c_x)=\frac{Weight(d_i, c_x)} {\sum^n_{j=1}Weight(d_i,c_j)}
-      $$
-      即类 $c_x$ 中词 $d_i$ 的权重除以所有类中词 $d_i$ 的权重之和
+      
+      <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;P(d_i|c_x)=\frac{Weight(d_i,&space;c_x)}&space;{\sum^n_{j=1}Weight(d_i,c_j)}" title="P(d_i|c_x)=\frac{Weight(d_i, c_x)} {\sum^n_{j=1}Weight(d_i,c_j)}" />
+      
+      即类 <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;c_x" title="c_x" /> 中词 <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;d_i" title="d_i" /> 的权重除以所有类中词 <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;d_i" title="d_i" /> 的权重之和
 
     - 分类比较：
-      $$
-      C_i = \max\{P(c_j)\prod^n_{i=1}P(w_i,c_j)^{wt(w_i)} \}
-      $$
+      
+      <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;C_i&space;=&space;\max\{P(c_j)\prod^n_{i=1}P(w_i,c_j)^{wt(w_i)}&space;\}" title="C_i = \max\{P(c_j)\prod^n_{i=1}P(w_i,c_j)^{wt(w_i)} \}" />
+      
       比较各类别概率，取大者，即为预测类别
 
     - 单个评论分类的具体计算过程：
@@ -91,10 +89,10 @@
       ![](https://note.youdao.com/yws/public/resource/30dbf02d1f596871f96b3bac4a78188f/xmlnote/74245EE858D147F5B717C4526F1F032F/8577)
 
     - 后验概率的平滑：若某个词既不在正面类也不在负面类中，此时，算得的后验概率便可能为0，将无法进行分类。采用**拉普拉斯平滑技术**：
-      $$
-      P(d_i|c_x)=\frac{Weight(d_i, c_x) + \delta} {\sum^n_{j=1}Weight(d_i,c_j) + V}
-      $$
-      其中 $\delta$ 在使用 bool 权值时取 1，$V=logZ$（$Z$ 为所有词的权值总和）
+      
+      <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;P(d_i|c_x)=\frac{Weight(d_i,&space;c_x)&space;&plus;&space;\delta}&space;{\sum^n_{j=1}Weight(d_i,c_j)&space;&plus;&space;V}" title="P(d_i|c_x)=\frac{Weight(d_i, c_x) + \delta} {\sum^n_{j=1}Weight(d_i,c_j) + V}" />
+      
+      其中 <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;delta" title="delta" /> 在使用 bool 权值时取 1，<img src="https://latex.codecogs.com/png.image?\dpi{110}&space;V=logZ" title="V=logZ" />（<img src="https://latex.codecogs.com/png.image?\dpi{110}&space;Z" title="Z" /> 为所有词的权值总和）
 
 - 分类结果评估
 
@@ -109,7 +107,7 @@
 
     |     准确率（accuracy）      | 精确率（precision） |  召回率（recal）   |                 F值（F-measure）                  |
     | :-------------------------: | :-----------------: | :----------------: | :-----------------------------------------------: |
-    | $\frac{TP+TN}{TP+FP+FN+TN}$ | $\frac{TP}{TP+FP}$  | $\frac{TP}{TP+FN}$ | $F_1=\frac{2*precision*recall}{precision+recall}$ |
+    | <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;\frac{TP&plus;TN}{TP&plus;FP&plus;FN&plus;TN}" title="\frac{TP+TN}{TP+FP+FN+TN}" /> | <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;\frac{TP}{TP&plus;FP}" title="\frac{TP}{TP+FP}" />  | <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;\frac{TP}{TP&plus;FN}" title="\frac{TP}{TP+FN}" /> | <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;F_1=\frac{2*precision*recall}{precision&plus;recall}" title="F_1=\frac{2*precision*recall}{precision+recall}" /> |
 
     评价的时候，自然是希望Precision越高越好，同时Recall也越高越好，但事实上两者在某些情况下是有矛盾的。这样就需要综合考虑他们，最常见的方法是F-Measure，他是 P 和 R 的调和平均数。
 
