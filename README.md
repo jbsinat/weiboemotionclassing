@@ -33,8 +33,8 @@
     <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;bool(w_i)&space;=&space;\begin{cases}&space;1,&space;&&space;\text&space;w_i&space;\in&space;d&space;\\&space;0,&space;&&space;\text&space;w_i&space;\notin&space;d&space;\end{cases}" title="bool(w_i) = \begin{cases} 1, & \text w_i \in d \\ 0, & \text w_i \notin d \end{cases}" />
     
     其中 <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;w_i&space;\in&space;d" title="w_i \in d" /> 表示词 <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;w_i" title="w_i" /> 属于文本 <img src="https://latex.codecogs.com/png.image?\dpi{110}&space;d" title="d" />。
-
-  <img src="https://note.youdao.com/yws/public/resource/30dbf02d1f596871f96b3bac4a78188f/xmlnote/3D48515EB85041E7A7B2615EF8FB33BE/8571" style="zoom: 60%;" />
+    
+  <img src="https://note.youdao.com/yws/public/resource/30dbf02d1f596871f96b3bac4a78188f/xmlnote/3D48515EB85041E7A7B2615EF8FB33BE/8571"  width="600"/>
 
 - 特征提取与权值计算
 
@@ -60,7 +60,7 @@
 
 - 分类器选择
 
-  <img src="https://note.youdao.com/yws/public/resource/30dbf02d1f596871f96b3bac4a78188f/xmlnote/B97AB38C9F1C47B1B1C96B59965F937D/8575" style="zoom:60%;" />
+  <img src="https://note.youdao.com/yws/public/resource/30dbf02d1f596871f96b3bac4a78188f/xmlnote/B97AB38C9F1C47B1B1C96B59965F937D/8575" width="600" />
 
   - 贝叶斯定理：
     
@@ -111,7 +111,7 @@
 
     评价的时候，自然是希望Precision越高越好，同时Recall也越高越好，但事实上两者在某些情况下是有矛盾的。这样就需要综合考虑他们，最常见的方法是F-Measure，他是 P 和 R 的调和平均数。
 
-  <img src="https://note.youdao.com/yws/public/resource/30dbf02d1f596871f96b3bac4a78188f/xmlnote/3D2337C7173E4158B699516B90758CFC/8579" style="zoom:60%;" />
+  <img src="https://note.youdao.com/yws/public/resource/30dbf02d1f596871f96b3bac4a78188f/xmlnote/3D2337C7173E4158B699516B90758CFC/8579" width="600" />
 
 ---
 
